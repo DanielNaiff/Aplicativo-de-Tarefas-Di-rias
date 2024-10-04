@@ -22,32 +22,42 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
   final TextEditingController titulo = TextEditingController();
   final TextEditingController data = TextEditingController();
 
-  void _SalvarOuEditarTarefa() {
+  List<ListaModel> tarefa = [];
+
+  @override
+  void dispose() {
+    titulo.dispose();
+    data.dispose();
+    descricao.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarTarefas();
+  }
+
+  void _carregarTarefas() async {
+    tarefa = await shared_pref_api().getList();
+    print(
+        "Tarefas carregadas: $tarefa"); // Alog para verificar se tarefa foi carregada
+    setState(() {});
+  }
+
+  void _SalvarTarefa() {
     if (_validacaoInputs()) {
-      if (!editada) {
-        // Adicionar nova tarefa
-        tarefa.add(ListaModel(
-          id: getid(),
-          titulo: titulo.text,
-          data: data.text,
-          descricao: descricao.text,
-        ));
-        shared_pref_api().salvarLista(tarefa);
-      } else {
-        // Atualizar tarefa existente
-        shared_pref_api().atualizarLista(
-          tarefa,
-          id,
-          titulo.text,
-          data.text,
-          descricao.text,
-        );
-        setState(() {
-          id = 0;
-          editada = false;
-        });
-      }
-      populateList();
+      // Adiciona nova tarefa
+      tarefa.add(ListaModel(
+        id: _getId(),
+        titulo: titulo.text,
+        data: data.text,
+        descricao: descricao.text,
+      ));
+      shared_pref_api().salvarLista(tarefa);
+      print(
+          "Nova tarefa adicionada: $tarefa"); //log para verificar se a tarefa esta sendo salva
+      setState(() {});
       Navigator.pop(context);
     }
   }
@@ -73,59 +83,14 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
         .showSnackBar(SnackBar(content: Text(message)));
   }
 
-  List<ListaModel> tarefa = [];
-  bool carregada = false;
-  bool editada = false;
-  int id = 0;
-
-  @override
-  void dispose() {
-    titulo.dispose();
-    data.dispose();
-    descricao.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    populateList();
-  }
-
-  populateList() async {
-    tarefa = await shared_pref_api().getList();
-    if (tarefa != null) {
-      setState(() {
-        carregada = true;
-      });
-    }
-  }
-
-  getid() {
+  int _getId() {
     int max = 0;
-    List<int> ids = [];
-    if (tarefa != null) {
-      for (var i in tarefa) {
-        ids.add(i.id.toInt());
-      }
-      for (int i in ids) {
-        if (i > max) {
-          max = i;
-        }
-      }
-      return max + 1;
-    } else {
-      return 0;
-    }
-  }
-
-  deleteTaks(int id) {
-    for (var i in tarefa) {
-      if (i.id == id) {
-        tarefa.remove(i);
-        break;
+    for (var tarefa in tarefa) {
+      if (tarefa.id > max) {
+        max = tarefa.id;
       }
     }
-    shared_pref_api().salvarLista(tarefa);
+    return max + 1;
   }
 
   @override
@@ -181,7 +146,6 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
             TextFormField(
               controller: data,
               decoration: InputDecoration(
-                constraints: BoxConstraints(maxHeight: 50),
                 hintText: 'Escolha uma data',
                 labelText: 'Data',
                 labelStyle: TextStyle(
@@ -209,8 +173,7 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
                     data.text = formattedDate;
                   });
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Data não selecionada!')));
+                  _showSnackBar('Data não selecionada!');
                 }
               },
             ),
@@ -219,7 +182,6 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
               controller: descricao,
               maxLines: 3,
               decoration: InputDecoration(
-                constraints: const BoxConstraints(maxHeight: 150),
                 hintText: 'Digite uma descrição',
                 labelText: 'Descrição',
                 labelStyle: TextStyle(
@@ -240,11 +202,10 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   TextButton.icon(
-                    style: const ButtonStyle(
-                      backgroundColor:
-                          WidgetStatePropertyAll(Colors.deepOrange),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.deepOrange,
                     ),
-                    onPressed: _SalvarOuEditarTarefa,
+                    onPressed: _SalvarTarefa,
                     icon: const Icon(Icons.save, color: Colors.white),
                     label: const Text(
                       'Salvar',
@@ -253,9 +214,8 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
                   ),
                   const SizedBox(width: 10),
                   TextButton.icon(
-                    style: const ButtonStyle(
-                      backgroundColor:
-                          WidgetStatePropertyAll(Colors.deepOrange),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.deepOrange,
                     ),
                     onPressed: () {
                       titulo.clear();

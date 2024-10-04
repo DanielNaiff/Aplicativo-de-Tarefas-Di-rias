@@ -19,6 +19,8 @@ class shared_pref_api {
     final stringJson = json.encode(todos);
     SharedPreferences sf = await SharedPreferences.getInstance();
     sf.setString(key, stringJson);
+    print(
+        "Tarefas salvas: $todos"); //print para verificar se as tarefas estão sendo salvas
   }
 
   void atualizarLista(List<ListaModel> todos, int id, String titulo,

@@ -1,7 +1,7 @@
-import 'package:aplicativo_de_tarefas_diarias/models/listaModel.dart';
 import 'package:flutter/material.dart';
 import 'creating_todo_screen.dart';
 import 'package:aplicativo_de_tarefas_diarias/APIs/ListaSharedPreferences.dart';
+import 'package:aplicativo_de_tarefas_diarias/models/listaModel.dart';
 
 class Todos_screen extends StatefulWidget {
   final Function onToggleTheme;
@@ -79,7 +79,7 @@ class _Todos_screenState extends State<Todos_screen> {
                     color: widget.isDarkTheme ? Colors.grey[800] : Colors.white,
                     margin: const EdgeInsets.all(5),
                     child: Container(
-                      height: 50,
+                      height: 80,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -117,12 +117,12 @@ class _Todos_screenState extends State<Todos_screen> {
                             icon: const Icon(Icons.delete,
                                 color: Colors.deepOrange),
                             onPressed: () {
+                              shared_pref_api()
+                                  .deletarLista(tarefa, tarefa[index].id);
                               setState(() {
-                                // Chama o método de deletar na API
-                                shared_pref_api()
-                                    .deletarLista(tarefa, tarefa[index].id);
                                 tarefa.removeAt(index);
                               });
+
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                     content: Text('Tarefa deletada!')),
