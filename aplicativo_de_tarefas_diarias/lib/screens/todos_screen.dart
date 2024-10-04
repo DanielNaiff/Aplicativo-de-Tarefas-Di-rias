@@ -14,113 +14,129 @@ class _Todos_screenState extends State<Todos_screen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.deepOrange, // Cor do AppBar
         title: const Center(
-            child: Text('Aplicativo de Tarefas Diárias',
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold))),
+          child: Text(
+            'Aplicativo de Tarefas Diárias',
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+          ),
+        ),
       ),
-      body: Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  'Lista de tarefas',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
-                ),
-              ],
+      body: Container(
+        color: Colors.grey[850], // Fundo cinza escuro
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(left: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    'Lista de tarefas',
+                    style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white), // Texto em branco
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  scrollDirection: Axis.vertical,
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return Slidable(
-                      startActionPane: ActionPane(
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      return Slidable(
+                        startActionPane: ActionPane(
                           motion: const ScrollMotion(),
                           dismissible: DismissiblePane(onDismissed: () {}),
                           children: [
                             SlidableAction(
                               onPressed: null,
                               backgroundColor: Colors.white,
-                              foregroundColor: Colors.blue,
+                              foregroundColor:
+                                  Colors.deepOrange, // Cor do ícone
                               icon: Icons.delete,
                               label: 'Deletar',
                             )
-                          ]),
-                      endActionPane:
-                          ActionPane(motion: const ScrollMotion(), children: [
-                        SlidableAction(
-                          onPressed: (context) {},
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.blue,
-                          icon: Icons.edit,
-                          label: 'Editar',
-                        )
-                      ]),
-                      child: Card(
-                        elevation: 10,
-                        color: Colors.blue,
-                        margin: EdgeInsets.all(5),
-                        child: Container(
-                          height: 50,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Título : ',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white),
-                                  ),
-                                  Text(
-                                    'Teste',
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Prazo final : ',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white),
-                                  ),
-                                  Text(
-                                    'Teste',
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                            ],
+                          ],
+                        ),
+                        endActionPane:
+                            ActionPane(motion: const ScrollMotion(), children: [
+                          SlidableAction(
+                            onPressed: (context) {},
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.deepOrange, // Cor do ícone
+                            icon: Icons.edit,
+                            label: 'Editar',
+                          )
+                        ]),
+                        child: Card(
+                          elevation: 10,
+                          color: Colors.grey[800], // Fundo do card
+                          margin: EdgeInsets.all(5),
+                          child: Container(
+                            height: 50,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Título : ',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500,
+                                          color:
+                                              Colors.white), // Texto em branco
+                                    ),
+                                    Text(
+                                      'Teste',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color:
+                                              Colors.white), // Texto em branco
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Prazo final : ',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500,
+                                          color:
+                                              Colors.white), // Texto em branco
+                                    ),
+                                    Text(
+                                      'Teste',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color:
+                                              Colors.white), // Texto em branco
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                )
-              ],
-            ),
-          )
-        ],
+                      );
+                    },
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -128,11 +144,10 @@ class _Todos_screenState extends State<Todos_screen> {
             context,
             MaterialPageRoute(
                 builder: (context) => const Creating_todo_screen()),
-          ).then((_) {
-            // Aqui você pode atualizar sua lista de tarefas se necessário
-          });
+          ).then((_) {});
         },
-        child: const Icon(Icons.add),
+        backgroundColor: Colors.deepOrange,
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
