@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:aplicativo_de_tarefas_diarias/models/listaModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,9 +11,7 @@ class shared_pref_api {
     final jsonDecoded = json.decode(jsonString) as List;
 
     return jsonDecoded
-        .map(
-          (e) => ListaModel.fromJson(e as Map<String, dynamic>),
-        )
+        .map((e) => ListaModel.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
@@ -33,6 +30,11 @@ class shared_pref_api {
         i.descricao = descricao;
       }
     }
+    salvarLista(todos);
+  }
+
+  void deletarLista(List<ListaModel> todos, int id) async {
+    todos.removeWhere((tarefa) => tarefa.id == id);
     salvarLista(todos);
   }
 }

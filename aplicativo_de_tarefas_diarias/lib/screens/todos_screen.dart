@@ -1,6 +1,7 @@
+import 'package:aplicativo_de_tarefas_diarias/models/listaModel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'creating_todo_screen.dart';
+import 'package:aplicativo_de_tarefas_diarias/APIs/ListaSharedPreferences.dart';
 
 class Todos_screen extends StatefulWidget {
   final Function onToggleTheme;
@@ -17,6 +18,19 @@ class Todos_screen extends StatefulWidget {
 }
 
 class _Todos_screenState extends State<Todos_screen> {
+  List<ListaModel> tarefa = []; // Lista de tarefas
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarTarefas();
+  }
+
+  void _carregarTarefas() async {
+    tarefa = await shared_pref_api().getList();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +45,7 @@ class _Todos_screenState extends State<Todos_screen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.brightness_6),
-            onPressed: () => widget.onToggleTheme(), // Alterna o tema
+            onPressed: () => widget.onToggleTheme(),
           ),
         ],
       ),
@@ -47,9 +61,10 @@ class _Todos_screenState extends State<Todos_screen> {
                   Text(
                     'Lista de tarefas',
                     style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ],
               ),
@@ -57,71 +72,64 @@ class _Todos_screenState extends State<Todos_screen> {
             const SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
-                itemCount: 10,
+                itemCount: tarefa.length,
                 itemBuilder: (context, index) {
-                  return Slidable(
-                    startActionPane: ActionPane(
-                      motion: const ScrollMotion(),
-                      children: [
-                        SlidableAction(
-                          onPressed: (context) {},
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.deepOrange,
-                          icon: Icons.delete,
-                          label: 'Deletar',
-                        )
-                      ],
-                    ),
-                    endActionPane: ActionPane(
-                      motion: const ScrollMotion(),
-                      children: [
-                        SlidableAction(
-                          onPressed: (context) {
-                            title.text = task[index].title;
-                            date.text = task[index].date;
-                            description.text = task[index].description;
-                            setState(() {
-                              editpressed = true;
-                              this_id = task[index].id;
-                            });
-                          },
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.deepOrange,
-                          icon: Icons.edit,
-                          label: 'Editar',
-                        )
-                      ],
-                    ),
-                    child: Card(
-                      elevation: 10,
-                      color:
-                          widget.isDarkTheme ? Colors.grey[800] : Colors.white,
-                      margin: const EdgeInsets.all(5),
-                      child: Container(
-                        height: 50,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(
-                              'Título: Teste',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: widget.isDarkTheme
-                                    ? Colors.white
-                                    : Colors.black,
+                  return Card(
+                    elevation: 10,
+                    color: widget.isDarkTheme ? Colors.grey[800] : Colors.white,
+                    margin: const EdgeInsets.all(5),
+                    child: Container(
+                      height: 50,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    tarefa[index].titulo,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: widget.isDarkTheme
+                                          ? Colors.white
+                                          : Colors.black,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Prazo final: ' + tarefa[index].data,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: widget.isDarkTheme
+                                          ? Colors.white70
+                                          : Colors.black54,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            Text(
-                              'Prazo final: Teste',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: widget.isDarkTheme
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete,
+                                color: Colors.deepOrange),
+                            onPressed: () {
+                              setState(() {
+                                // Chama o método de deletar na API
+                                shared_pref_api()
+                                    .deletarLista(tarefa, tarefa[index].id);
+                                tarefa.removeAt(index);
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Tarefa deletada!')),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ),
                   );
@@ -141,7 +149,9 @@ class _Todos_screenState extends State<Todos_screen> {
                 isDarkTheme: widget.isDarkTheme,
               ),
             ),
-          );
+          ).then((_) {
+            _carregarTarefas(); // Atualiza a lista de tarefas ao retornar
+          });
         },
         backgroundColor: Colors.deepOrange,
         child: const Icon(Icons.add, color: Colors.white),
