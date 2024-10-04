@@ -117,16 +117,32 @@ class _Todos_screenState extends State<Todos_screen> {
                             icon: const Icon(Icons.delete,
                                 color: Colors.deepOrange),
                             onPressed: () {
-                              shared_pref_api()
-                                  .deletarLista(tarefa, tarefa[index].id);
-                              setState(() {
-                                tarefa.removeAt(index);
-                              });
+                              if (tarefa.isNotEmpty) {
+                                final tarefaRemovida = tarefa[index];
 
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Tarefa deletada!')),
-                              );
+                                // Imprimir antes da remoção
+                                print('Antes da remoção: $tarefa');
+
+                                // Remover a tarefa da lista local
+                                setState(() {
+                                  tarefa.removeAt(index);
+                                });
+
+                                // Remover a tarefa da lista persistente
+                                shared_pref_api()
+                                    .deletarLista(tarefa, tarefaRemovida.id);
+
+                                // Imprimir depois da remoção
+                                print('Depois da remoção: $tarefa');
+
+                                // Mostrar mensagem de confirmação
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Tarefa deletada!')),
+                                );
+                              } else {
+                                print('A lista de tarefas está vazia.');
+                              }
                             },
                           ),
                         ],

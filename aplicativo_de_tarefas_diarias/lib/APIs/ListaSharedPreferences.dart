@@ -35,8 +35,9 @@ class shared_pref_api {
     salvarLista(todos);
   }
 
-  void deletarLista(List<ListaModel> todos, int id) async {
+  void deletarLista(List<ListaModel> todos, int id) {
+    // Verifique se o ID existe na lista
     todos.removeWhere((tarefa) => tarefa.id == id);
-    salvarLista(todos);
+    salvarLista(todos); // Atualiza a persistência
   }
 }

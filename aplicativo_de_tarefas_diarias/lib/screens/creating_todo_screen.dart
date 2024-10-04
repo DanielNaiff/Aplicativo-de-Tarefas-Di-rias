@@ -41,7 +41,7 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
   void _carregarTarefas() async {
     tarefa = await shared_pref_api().getList();
     print(
-        "Tarefas carregadas: $tarefa"); // Alog para verificar se tarefa foi carregada
+        "Tarefas carregadas: $tarefa"); // log para verificar se tarefa foi carregada
     setState(() {});
   }
 
