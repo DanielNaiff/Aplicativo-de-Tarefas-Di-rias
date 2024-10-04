@@ -212,22 +212,6 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  TextButton.icon(
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.deepOrange,
-                    ),
-                    onPressed: () {
-                      titulo.clear();
-                      data.clear();
-                      descricao.clear();
-                    },
-                    icon: const Icon(Icons.clear, color: Colors.white),
-                    label: const Text(
-                      'Limpar',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
                 ],
               ),
             )

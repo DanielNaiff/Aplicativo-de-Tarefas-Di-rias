@@ -27,7 +27,16 @@ class _Todos_screenState extends State<Todos_screen> {
   }
 
   void _carregarTarefas() async {
-    tarefa = await shared_pref_api().getList();
+    List<ListaModel> tarefasRecuperadas = await shared_pref_api().getList();
+    tarefa = tarefasRecuperadas.map((t) {
+      return ListaModel(
+        id: t.id,
+        titulo: t.titulo,
+        data: t.data,
+        descricao: t.descricao,
+        concluida: t.concluida ?? false, // Define um padrão se for null
+      );
+    }).toList();
     setState(() {});
   }
 
@@ -98,6 +107,9 @@ class _Todos_screenState extends State<Todos_screen> {
                                       color: widget.isDarkTheme
                                           ? Colors.white
                                           : Colors.black,
+                                      decoration: tarefa[index].concluida
+                                          ? TextDecoration.lineThrough
+                                          : null,
                                     ),
                                   ),
                                   Text(
@@ -112,6 +124,16 @@ class _Todos_screenState extends State<Todos_screen> {
                                 ],
                               ),
                             ),
+                          ),
+                          Checkbox(
+                            value: tarefa[index].concluida,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                tarefa[index].concluida = value!;
+                              });
+                              shared_pref_api().salvarLista(
+                                  tarefa); // Atualiza a lista persistente
+                            },
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete,
