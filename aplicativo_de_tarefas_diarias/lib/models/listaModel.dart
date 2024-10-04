@@ -12,22 +12,27 @@ class ListaModel {
     required this.descricao,
     required this.data,
     required this.titulo,
+    this.concluida = false,
   });
   int id;
   String titulo;
   String descricao;
   String data;
+  bool concluida;
 
   factory ListaModel.fromJson(Map<String, dynamic> json) => ListaModel(
-      id: json['id'],
-      descricao: json['descricao'],
-      data: json['data'],
-      titulo: json['titulo']);
+        id: json['id'],
+        descricao: json['descricao'],
+        data: json['data'],
+        titulo: json['titulo'],
+        concluida: json['concluida'] ?? false,
+      );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "descricao": descricao,
         "data": data,
         "titulo": titulo,
+        "concluida": concluida,
       };
 }
