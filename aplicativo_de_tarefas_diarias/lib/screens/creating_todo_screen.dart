@@ -2,31 +2,52 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Creating_todo_screen extends StatefulWidget {
-  const Creating_todo_screen({super.key});
+  final Function onToggleTheme;
+  final bool isDarkTheme;
+
+  const Creating_todo_screen({
+    Key? key,
+    required this.onToggleTheme,
+    required this.isDarkTheme,
+  }) : super(key: key);
 
   @override
   State<Creating_todo_screen> createState() => _Creating_todo_screenState();
 }
 
 class _Creating_todo_screenState extends State<Creating_todo_screen> {
-  TextEditingController descricao = TextEditingController();
-  TextEditingController titulo = TextEditingController();
-  TextEditingController data = TextEditingController();
+  final TextEditingController descricao = TextEditingController();
+  final TextEditingController titulo = TextEditingController();
+  final TextEditingController data = TextEditingController();
+
+  @override
+  void dispose() {
+    titulo.dispose();
+    data.dispose();
+    descricao.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepOrange, // Cor do AppBar
+        backgroundColor: Colors.deepOrange,
         title: const Center(
           child: Text(
             'Aplicativo de Tarefas Diárias',
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.brightness_6),
+            onPressed: () => widget.onToggleTheme(),
+          ),
+        ],
       ),
       body: Container(
-        color: Colors.grey[850], // Fundo cinza escuro
+        color: widget.isDarkTheme ? Colors.grey[850] : Colors.white,
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
@@ -37,7 +58,7 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
                 style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white), // Texto em branco
+                    color: Colors.white),
               ),
             ),
             const SizedBox(height: 10),
@@ -46,16 +67,13 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
               decoration: InputDecoration(
                 hintText: 'Digite o título',
                 labelText: 'Título',
-                labelStyle:
-                    const TextStyle(color: Colors.white), // Cor do label
-                hintStyle:
-                    const TextStyle(color: Colors.white70), // Cor do hint
-                prefixIcon: const Icon(Icons.title,
-                    color: Colors.deepOrange), // Cor do ícone
+                labelStyle: TextStyle(
+                    color: widget.isDarkTheme ? Colors.white : Colors.black),
+                hintStyle: const TextStyle(color: Colors.white70),
+                prefixIcon: const Icon(Icons.title, color: Colors.deepOrange),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide:
-                      BorderSide(color: Colors.deepOrange), // Borda do campo
+                  borderSide: BorderSide(color: Colors.deepOrange),
                 ),
               ),
             ),
@@ -66,7 +84,8 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
                 constraints: BoxConstraints(maxHeight: 50),
                 hintText: 'Escolha uma data',
                 labelText: 'Data',
-                labelStyle: const TextStyle(color: Colors.white),
+                labelStyle: TextStyle(
+                    color: widget.isDarkTheme ? Colors.white : Colors.black),
                 hintStyle: const TextStyle(color: Colors.white70),
                 prefixIcon:
                     const Icon(Icons.calendar_month, color: Colors.deepOrange),
@@ -84,10 +103,10 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
                   lastDate: DateTime(DateTime.now().year + 1),
                 );
                 if (pickedDate != null) {
-                  String formatedDate =
+                  String formattedDate =
                       DateFormat('yyyy-MM-dd').format(pickedDate);
                   setState(() {
-                    data.text = formatedDate;
+                    data.text = formattedDate;
                   });
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -103,7 +122,8 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
                 constraints: const BoxConstraints(maxHeight: 150),
                 hintText: 'Digite uma descrição',
                 labelText: 'Descrição',
-                labelStyle: const TextStyle(color: Colors.white),
+                labelStyle: TextStyle(
+                    color: widget.isDarkTheme ? Colors.white : Colors.black),
                 hintStyle: const TextStyle(color: Colors.white70),
                 prefixIcon:
                     const Icon(Icons.description, color: Colors.deepOrange),

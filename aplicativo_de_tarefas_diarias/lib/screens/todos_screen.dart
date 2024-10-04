@@ -1,9 +1,16 @@
-import 'package:aplicativo_de_tarefas_diarias/screens/creating_todo_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'creating_todo_screen.dart';
 
 class Todos_screen extends StatefulWidget {
-  const Todos_screen({super.key});
+  final Function onToggleTheme;
+  final bool isDarkTheme;
+
+  const Todos_screen({
+    Key? key,
+    required this.onToggleTheme,
+    required this.isDarkTheme,
+  }) : super(key: key);
 
   @override
   State<Todos_screen> createState() => _Todos_screenState();
@@ -14,16 +21,22 @@ class _Todos_screenState extends State<Todos_screen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepOrange, // Cor do AppBar
+        backgroundColor: Colors.deepOrange,
         title: const Center(
           child: Text(
             'Aplicativo de Tarefas Diárias',
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.brightness_6),
+            onPressed: () => widget.onToggleTheme(), // Alterna o tema
+          ),
+        ],
       ),
       body: Container(
-        color: Colors.grey[850], // Fundo cinza escuro
+        color: widget.isDarkTheme ? Colors.grey[850] : Colors.white,
         child: Column(
           children: [
             const Padding(
@@ -36,105 +49,77 @@ class _Todos_screenState extends State<Todos_screen> {
                     style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white), // Texto em branco
+                        color: Colors.white),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.vertical,
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return Slidable(
-                        startActionPane: ActionPane(
-                          motion: const ScrollMotion(),
-                          dismissible: DismissiblePane(onDismissed: () {}),
+            Expanded(
+              child: ListView.builder(
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  return Slidable(
+                    startActionPane: ActionPane(
+                      motion: const ScrollMotion(),
+                      children: [
+                        SlidableAction(
+                          onPressed: (context) {},
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.deepOrange,
+                          icon: Icons.delete,
+                          label: 'Deletar',
+                        )
+                      ],
+                    ),
+                    endActionPane: ActionPane(
+                      motion: const ScrollMotion(),
+                      children: [
+                        SlidableAction(
+                          onPressed: (context) {},
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.deepOrange,
+                          icon: Icons.edit,
+                          label: 'Editar',
+                        )
+                      ],
+                    ),
+                    child: Card(
+                      elevation: 10,
+                      color:
+                          widget.isDarkTheme ? Colors.grey[800] : Colors.white,
+                      margin: const EdgeInsets.all(5),
+                      child: Container(
+                        height: 50,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            SlidableAction(
-                              onPressed: null,
-                              backgroundColor: Colors.white,
-                              foregroundColor:
-                                  Colors.deepOrange, // Cor do ícone
-                              icon: Icons.delete,
-                              label: 'Deletar',
-                            )
+                            Text(
+                              'Título: Teste',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: widget.isDarkTheme
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            ),
+                            Text(
+                              'Prazo final: Teste',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: widget.isDarkTheme
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            ),
                           ],
                         ),
-                        endActionPane:
-                            ActionPane(motion: const ScrollMotion(), children: [
-                          SlidableAction(
-                            onPressed: (context) {},
-                            backgroundColor: Colors.white,
-                            foregroundColor: Colors.deepOrange, // Cor do ícone
-                            icon: Icons.edit,
-                            label: 'Editar',
-                          )
-                        ]),
-                        child: Card(
-                          elevation: 10,
-                          color: Colors.grey[800], // Fundo do card
-                          margin: EdgeInsets.all(5),
-                          child: Container(
-                            height: 50,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Título : ',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w500,
-                                          color:
-                                              Colors.white), // Texto em branco
-                                    ),
-                                    Text(
-                                      'Teste',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          color:
-                                              Colors.white), // Texto em branco
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Prazo final : ',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w500,
-                                          color:
-                                              Colors.white), // Texto em branco
-                                    ),
-                                    Text(
-                                      'Teste',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          color:
-                                              Colors.white), // Texto em branco
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  )
-                ],
+                      ),
+                    ),
+                  );
+                },
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -143,8 +128,12 @@ class _Todos_screenState extends State<Todos_screen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const Creating_todo_screen()),
-          ).then((_) {});
+              builder: (context) => Creating_todo_screen(
+                onToggleTheme: widget.onToggleTheme,
+                isDarkTheme: widget.isDarkTheme,
+              ),
+            ),
+          );
         },
         backgroundColor: Colors.deepOrange,
         child: const Icon(Icons.add, color: Colors.white),
