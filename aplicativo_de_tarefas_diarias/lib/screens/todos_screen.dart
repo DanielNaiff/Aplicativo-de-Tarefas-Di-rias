@@ -47,8 +47,8 @@ class _Todos_screenState extends State<Todos_screen> {
                   Text(
                     'Lista de tarefas',
                     style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
                         color: Colors.white),
                   ),
                 ],
@@ -76,7 +76,15 @@ class _Todos_screenState extends State<Todos_screen> {
                       motion: const ScrollMotion(),
                       children: [
                         SlidableAction(
-                          onPressed: (context) {},
+                          onPressed: (context) {
+                            title.text = task[index].title;
+                            date.text = task[index].date;
+                            description.text = task[index].description;
+                            setState(() {
+                              editpressed = true;
+                              this_id = task[index].id;
+                            });
+                          },
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.deepOrange,
                           icon: Icons.edit,

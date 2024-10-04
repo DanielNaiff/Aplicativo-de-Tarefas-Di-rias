@@ -1,3 +1,5 @@
+import 'package:aplicativo_de_tarefas_diarias/APIs/ListaSharedPreferences.dart';
+import 'package:aplicativo_de_tarefas_diarias/models/listaModel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -20,12 +22,110 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
   final TextEditingController titulo = TextEditingController();
   final TextEditingController data = TextEditingController();
 
+  void _SalvarOuEditarTarefa() {
+    if (_validacaoInputs()) {
+      if (!editada) {
+        // Adicionar nova tarefa
+        tarefa.add(ListaModel(
+          id: getid(),
+          titulo: titulo.text,
+          data: data.text,
+          descricao: descricao.text,
+        ));
+        shared_pref_api().salvarLista(tarefa);
+      } else {
+        // Atualizar tarefa existente
+        shared_pref_api().atualizarLista(
+          tarefa,
+          id,
+          titulo.text,
+          data.text,
+          descricao.text,
+        );
+        setState(() {
+          id = 0;
+          editada = false;
+        });
+      }
+      populateList();
+      Navigator.pop(context);
+    }
+  }
+
+  bool _validacaoInputs() {
+    if (titulo.text.isEmpty) {
+      _showSnackBar('Está faltando o título');
+      return false;
+    }
+    if (data.text.isEmpty) {
+      _showSnackBar('Está faltando a data');
+      return false;
+    }
+    if (descricao.text.isEmpty) {
+      _showSnackBar('Está faltando a descrição');
+      return false;
+    }
+    return true;
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  List<ListaModel> tarefa = [];
+  bool carregada = false;
+  bool editada = false;
+  int id = 0;
+
   @override
   void dispose() {
     titulo.dispose();
     data.dispose();
     descricao.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    populateList();
+  }
+
+  populateList() async {
+    tarefa = await shared_pref_api().getList();
+    if (tarefa != null) {
+      setState(() {
+        carregada = true;
+      });
+    }
+  }
+
+  getid() {
+    int max = 0;
+    List<int> ids = [];
+    if (tarefa != null) {
+      for (var i in tarefa) {
+        ids.add(i.id.toInt());
+      }
+      for (int i in ids) {
+        if (i > max) {
+          max = i;
+        }
+      }
+      return max + 1;
+    } else {
+      return 0;
+    }
+  }
+
+  deleteTaks(int id) {
+    for (var i in tarefa) {
+      if (i.id == id) {
+        tarefa.remove(i);
+        break;
+      }
+    }
+    shared_pref_api().salvarLista(tarefa);
   }
 
   @override
@@ -142,11 +242,9 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
                   TextButton.icon(
                     style: const ButtonStyle(
                       backgroundColor:
-                          MaterialStatePropertyAll(Colors.deepOrange),
+                          WidgetStatePropertyAll(Colors.deepOrange),
                     ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: _SalvarOuEditarTarefa,
                     icon: const Icon(Icons.save, color: Colors.white),
                     label: const Text(
                       'Salvar',
@@ -157,7 +255,7 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
                   TextButton.icon(
                     style: const ButtonStyle(
                       backgroundColor:
-                          MaterialStatePropertyAll(Colors.deepOrange),
+                          WidgetStatePropertyAll(Colors.deepOrange),
                     ),
                     onPressed: () {
                       titulo.clear();
