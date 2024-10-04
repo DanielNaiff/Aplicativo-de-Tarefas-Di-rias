@@ -125,6 +125,15 @@ class _Todos_screenState extends State<Todos_screen> {
                               ),
                             ),
                           ),
+                          Text(
+                            tarefa[index].concluida ? "Concluída" : "Pendente",
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: tarefa[index].concluida
+                                    ? Colors.green
+                                    : Colors.red),
+                          ),
                           Checkbox(
                             value: tarefa[index].concluida,
                             onChanged: (bool? value) {
