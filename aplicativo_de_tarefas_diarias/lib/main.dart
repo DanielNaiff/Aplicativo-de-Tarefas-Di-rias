@@ -1,4 +1,4 @@
-import 'package:aplicativo_de_tarefas_diarias/screens/creating_todo_screen.dart';
+import 'package:aplicativo_de_tarefas_diarias/screens/todos_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Creating_todo_screen(),
+      home: const Todos_screen(),
     );
   }
 }

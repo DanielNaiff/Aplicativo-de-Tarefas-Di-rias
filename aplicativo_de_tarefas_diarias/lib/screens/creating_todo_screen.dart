@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 
 class Creating_todo_screen extends StatefulWidget {
@@ -103,7 +100,9 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
                   TextButton.icon(
                     style: const ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(Colors.blue)),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     icon: const Icon(Icons.save, color: Colors.white),
                     label: const Text(
                       'Salvar',
