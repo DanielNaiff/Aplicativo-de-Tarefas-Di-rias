@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Creating_todo_screen extends StatefulWidget {
-  final Function onToggleTheme;
-  final bool isDarkTheme;
+  final Function onToggleTheme; // Função para alternar o tema
+  final bool isDarkTheme; // Variável para verificar se o tema é escuro
 
+  // Construtor para as variáveis que mudam o tema
   const Creating_todo_screen({
     Key? key,
     required this.onToggleTheme,
@@ -18,35 +19,38 @@ class Creating_todo_screen extends StatefulWidget {
 }
 
 class _Creating_todo_screenState extends State<Creating_todo_screen> {
+  // Variáveis que controlam as variáveis do formulário
   final TextEditingController descricao = TextEditingController();
   final TextEditingController titulo = TextEditingController();
   final TextEditingController data = TextEditingController();
 
-  List<ListaModel> tarefa = [];
+  List<ListaModel> tarefa = []; // Lista de tarefas
 
   @override
   void dispose() {
-    titulo.dispose();
-    data.dispose();
-    descricao.dispose();
+    titulo.dispose(); // Libera o controlador do título
+    data.dispose(); // Libera o controlador da data
+    descricao.dispose(); // Libera o controlador da descrição
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    _carregarTarefas();
+    _carregarTarefas(); // Carrega as tarefas quando o estado é inicializado
   }
 
   void _carregarTarefas() async {
-    tarefa = await shared_pref_api().getList();
+    tarefa = await shared_pref_api()
+        .getList(); // Carrega a lista de tarefas do SharedPreferences
     print(
-        "Tarefas carregadas: $tarefa"); // log para verificar se tarefa foi carregada
-    setState(() {});
+        "Tarefas carregadas: $tarefa"); // Log para verificar se as tarefas foram carregadas
+    setState(() {}); // Atualiza a interface
   }
 
   void _SalvarTarefa() {
     if (_validacaoInputs()) {
+      // Valida os inputs
       // Adiciona nova tarefa
       tarefa.add(ListaModel(
         id: _getId(),
@@ -54,14 +58,16 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
         data: data.text,
         descricao: descricao.text,
       ));
-      shared_pref_api().salvarLista(tarefa);
+      shared_pref_api()
+          .salvarLista(tarefa); // Salva a lista de tarefas no SharedPreferences
       print(
-          "Nova tarefa adicionada: $tarefa"); //log para verificar se a tarefa esta sendo salva
+          "Nova tarefa adicionada: $tarefa"); // Log para verificar se a tarefa foi salva
       setState(() {});
-      Navigator.pop(context);
+      Navigator.pop(context); // Fecha a tela de criação de tarefas
     }
   }
 
+  // Função que valida as diversas possibilidades do usuário errar no formulário
   bool _validacaoInputs() {
     if (titulo.text.isEmpty) {
       _showSnackBar('Está faltando o título');
@@ -75,7 +81,7 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
       _showSnackBar('Está faltando a descrição');
       return false;
     }
-    return true;
+    return true; // Retorna true se todos os campos forem preenchidos
   }
 
   void _showSnackBar(String message) {
@@ -83,14 +89,15 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
         .showSnackBar(SnackBar(content: Text(message)));
   }
 
+  // Obtém o ID
   int _getId() {
-    int max = 0;
+    int max = 0; // Variável para armazenar o maior ID
     for (var tarefa in tarefa) {
       if (tarefa.id > max) {
-        max = tarefa.id;
+        max = tarefa.id; // Atualiza o maior ID
       }
     }
-    return max + 1;
+    return max + 1; // Retorna o próximo ID disponível
   }
 
   @override
@@ -107,23 +114,29 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.brightness_6),
-            onPressed: () => widget.onToggleTheme(),
+            onPressed: () =>
+                widget.onToggleTheme(), // Alterna o tema ao clicar no botão
           ),
         ],
       ),
       body: Container(
-        color: widget.isDarkTheme ? Colors.grey[850] : Colors.white,
+        color: widget.isDarkTheme
+            ? Colors.grey[850]
+            : Colors.white, // Define a cor do fundo de acordo com o tema
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 25, top: 25),
+            Padding(
+              padding: const EdgeInsets.only(left: 25, top: 25),
               child: Text(
                 "Adicione uma tarefa",
                 style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  color: widget.isDarkTheme
+                      ? Colors.white
+                      : Colors.black, // Cor do texto de acordo com o tema
+                ),
               ),
             ),
             const SizedBox(height: 10),
@@ -138,13 +151,13 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
                 prefixIcon: const Icon(Icons.title, color: Colors.deepOrange),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.deepOrange),
+                  borderSide: const BorderSide(color: Colors.deepOrange),
                 ),
               ),
             ),
             const SizedBox(height: 10),
             TextFormField(
-              controller: data,
+              controller: data, // Controlador para o campo de data
               decoration: InputDecoration(
                 hintText: 'Escolha uma data',
                 labelText: 'Data',
@@ -155,22 +168,23 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
                     const Icon(Icons.calendar_month, color: Colors.deepOrange),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.deepOrange),
+                  borderSide: const BorderSide(color: Colors.deepOrange),
                 ),
               ),
-              readOnly: true,
+              readOnly: true, // Campo somente leitura
               onTap: () async {
+                // Calendário para escolher a data
                 DateTime? pickedDate = await showDatePicker(
                   context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime(DateTime.now().year + 1),
+                  initialDate: DateTime.now(), // Data inicial
+                  firstDate: DateTime.now(), // Data mínima
+                  lastDate: DateTime(DateTime.now().year + 1), // Data máxima
                 );
                 if (pickedDate != null) {
-                  String formattedDate =
-                      DateFormat('yyyy-MM-dd').format(pickedDate);
+                  String formattedDate = DateFormat('yyyy-MM-dd')
+                      .format(pickedDate); // Formata a data
                   setState(() {
-                    data.text = formattedDate;
+                    data.text = formattedDate; // Atualiza o campo de data
                   });
                 } else {
                   _showSnackBar('Data não selecionada!');
@@ -179,7 +193,7 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
             ),
             const SizedBox(height: 10),
             TextFormField(
-              controller: descricao,
+              controller: descricao, // Controlador para o campo de descrição
               maxLines: 3,
               decoration: InputDecoration(
                 hintText: 'Digite uma descrição',
@@ -191,7 +205,7 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
                     const Icon(Icons.description, color: Colors.deepOrange),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.deepOrange),
+                  borderSide: const BorderSide(color: Colors.deepOrange),
                 ),
               ),
             ),
@@ -199,7 +213,7 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextButton.icon(
                     style: TextButton.styleFrom(
