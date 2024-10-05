@@ -136,7 +136,9 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
                     child: Text(
                       "Adicione uma tarefa",
                       style: TextStyle(
-                        fontSize: 30 * MediaQuery.of(context).textScaleFactor,
+                        fontSize: 30 *
+                            MediaQuery.of(context)
+                                .textScaleFactor, //responsividade
                         fontWeight: FontWeight.bold,
                         color: widget.isDarkTheme
                             ? Colors.white

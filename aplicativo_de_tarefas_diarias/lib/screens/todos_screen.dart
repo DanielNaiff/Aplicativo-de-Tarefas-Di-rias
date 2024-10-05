@@ -52,7 +52,8 @@ class _Todos_screenState extends State<Todos_screen> {
           title: Text(
             tarefa.titulo,
             style: TextStyle(
-              fontSize: 24 * MediaQuery.of(context).textScaleFactor,
+              fontSize:
+                  24 * MediaQuery.of(context).textScaleFactor, //responsividade
               fontWeight: FontWeight.bold,
               color: widget.isDarkTheme ? Colors.white : Colors.black,
             ),
@@ -149,7 +150,7 @@ class _Todos_screenState extends State<Todos_screen> {
                                           style: TextStyle(
                                             fontSize: 20 *
                                                 MediaQuery.of(context)
-                                                    .textScaleFactor,
+                                                    .textScaleFactor, //responsividade
                                             color: widget.isDarkTheme
                                                 ? Colors.white
                                                 : Colors.black,
@@ -163,7 +164,7 @@ class _Todos_screenState extends State<Todos_screen> {
                                           style: TextStyle(
                                             fontSize: 16 *
                                                 MediaQuery.of(context)
-                                                    .textScaleFactor,
+                                                    .textScaleFactor, //responsividade
                                             color: widget.isDarkTheme
                                                 ? Colors.white70
                                                 : Colors.black54,
@@ -179,7 +180,8 @@ class _Todos_screenState extends State<Todos_screen> {
                                       : "Pendente",
                                   style: TextStyle(
                                     fontSize: 14 *
-                                        MediaQuery.of(context).textScaleFactor,
+                                        MediaQuery.of(context)
+                                            .textScaleFactor, //responsividade
                                     fontWeight: FontWeight.bold,
                                     color: tarefa[index].concluida
                                         ? Colors.green
