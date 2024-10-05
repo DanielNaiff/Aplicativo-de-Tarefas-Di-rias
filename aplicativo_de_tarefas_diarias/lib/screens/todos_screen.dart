@@ -52,7 +52,7 @@ class _Todos_screenState extends State<Todos_screen> {
           title: Text(
             tarefa.titulo,
             style: TextStyle(
-              fontSize: 26,
+              fontSize: 24 * MediaQuery.of(context).textScaleFactor,
               fontWeight: FontWeight.bold,
               color: widget.isDarkTheme ? Colors.white : Colors.black,
             ),
@@ -92,147 +92,159 @@ class _Todos_screenState extends State<Todos_screen> {
       ),
       body: Container(
         color: widget.isDarkTheme ? Colors.grey[850] : Colors.white,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    'Lista de tarefas',
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: widget.isDarkTheme ? Colors.white : Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: ListView.builder(
-                itemCount: tarefa.length, // Conta o número de tarefas
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    // Botão para mostrar a descrição
-                    onTap: () => _mostrarDescricao(tarefa[
-                        index]), // Mostra a descrição da tarefa ao clicar
-                    child: Card(
-                      elevation: 10,
-                      color:
-                          widget.isDarkTheme ? Colors.grey[800] : Colors.white,
-                      margin: const EdgeInsets.all(5),
-                      child: SizedBox(
-                        height: 80,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      tarefa[index].titulo, // Título da tarefa
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: widget.isDarkTheme
-                                            ? Colors.white
-                                            : Colors.black,
-                                        decoration: tarefa[index].concluida
-                                            ? TextDecoration
-                                                .lineThrough // Texto riscado se a tarefa estiver concluída
-                                            : null,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Prazo final: ' +
-                                          tarefa[index].data, // Prazo da tarefa
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: widget.isDarkTheme
-                                            ? Colors.white70
-                                            : Colors.black54, // Cor do prazo
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Text(
-                              tarefa[index].concluida // Status da tarefa
-                                  ? "Concluída"
-                                  : "Pendente",
-                              style: TextStyle(
-                                  // Mudança dinâmica de cor do status
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: tarefa[index].concluida
-                                      ? Colors.green
-                                      : Colors
-                                          .red), // Verde para concluída, vermelho para pendente
-                            ),
-                            Checkbox(
-                              value: tarefa[index]
-                                  .concluida, // Checkbox para marcar a tarefa como concluída
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  tarefa[index].concluida =
-                                      value!; // Atualiza o status da tarefa
-                                });
-                                shared_pref_api().salvarLista(
-                                    tarefa); // Atualiza a lista persistente
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete,
-                                  color: Colors.deepOrange),
-                              onPressed: () {
-                                if (tarefa.isNotEmpty) {
-                                  final tarefaRemovida = tarefa[
-                                      index]; // Armazena a tarefa que será removida
-
-                                  // Imprimir antes da remoção
-                                  print('Antes da remoção: $tarefa');
-
-                                  // Remove a tarefa da lista local
-                                  setState(() {
-                                    tarefa.removeAt(index);
-                                  });
-
-                                  // Remove a tarefa da lista persistente
-                                  shared_pref_api()
-                                      .deletarLista(tarefa, tarefaRemovida.id);
-
-                                  // Imprimir depois da remoção
-                                  print('Depois da remoção: $tarefa');
-
-                                  // Mostrar mensagem de confirmação
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            'Tarefa deletada!')), // Mensagem de feedback
-                                  );
-                                } else {
-                                  print(
-                                      'A lista de tarefas está vazia.'); // Mensagem de log se a lista estiver vazia
-                                }
-                              },
-                            ),
-                          ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Lista de tarefas',
+                        style: TextStyle(
+                          fontSize: 26 * MediaQuery.of(context).textScaleFactor,
+                          fontWeight: FontWeight.bold,
+                          color:
+                              widget.isDarkTheme ? Colors.white : Colors.black,
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: tarefa.length, // Conta o número de tarefas
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        // Botão para mostrar a descrição
+                        onTap: () => _mostrarDescricao(tarefa[
+                            index]), // Mostra a descrição da tarefa ao clicar
+                        child: Card(
+                          elevation: 10,
+                          color: widget.isDarkTheme
+                              ? Colors.grey[800]
+                              : Colors.white,
+                          margin: const EdgeInsets.all(5),
+                          child: SizedBox(
+                            height: 80,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          tarefa[index]
+                                              .titulo, // Título da tarefa
+                                          style: TextStyle(
+                                            fontSize: 20 *
+                                                MediaQuery.of(context)
+                                                    .textScaleFactor,
+                                            color: widget.isDarkTheme
+                                                ? Colors.white
+                                                : Colors.black,
+                                            decoration: tarefa[index].concluida
+                                                ? TextDecoration.lineThrough
+                                                : null,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Prazo final: ${tarefa[index].data}', // Prazo da tarefa
+                                          style: TextStyle(
+                                            fontSize: 16 *
+                                                MediaQuery.of(context)
+                                                    .textScaleFactor,
+                                            color: widget.isDarkTheme
+                                                ? Colors.white70
+                                                : Colors.black54,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  tarefa[index].concluida
+                                      ? "Concluída"
+                                      : "Pendente",
+                                  style: TextStyle(
+                                    fontSize: 14 *
+                                        MediaQuery.of(context).textScaleFactor,
+                                    fontWeight: FontWeight.bold,
+                                    color: tarefa[index].concluida
+                                        ? Colors.green
+                                        : Colors.red,
+                                  ),
+                                ),
+                                Checkbox(
+                                  value: tarefa[index]
+                                      .concluida, // Checkbox para marcar a tarefa como concluída
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      tarefa[index].concluida =
+                                          value!; // Atualiza o status da tarefa
+                                    });
+                                    shared_pref_api().salvarLista(
+                                        tarefa); // Atualiza a lista persistente
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.deepOrange),
+                                  onPressed: () {
+                                    if (tarefa.isNotEmpty) {
+                                      final tarefaRemovida = tarefa[
+                                          index]; // Armazena a tarefa que será removida
+
+                                      // Imprimir antes da remoção
+                                      print('Antes da remoção: $tarefa');
+
+                                      // Remove a tarefa da lista local
+                                      setState(() {
+                                        tarefa.removeAt(index);
+                                      });
+
+                                      // Remove a tarefa da lista persistente
+                                      shared_pref_api().deletarLista(
+                                          tarefa, tarefaRemovida.id);
+
+                                      // Imprimir depois da remoção
+                                      print('Depois da remoção: $tarefa');
+
+                                      // Mostrar mensagem de confirmação
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'Tarefa deletada!')), // Mensagem de feedback
+                                      );
+                                    } else {
+                                      print(
+                                          'A lista de tarefas está vazia.'); // Mensagem de log se a lista estiver vazia
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(

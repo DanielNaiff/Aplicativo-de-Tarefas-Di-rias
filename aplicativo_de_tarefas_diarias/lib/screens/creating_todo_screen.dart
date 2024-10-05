@@ -124,112 +124,126 @@ class _Creating_todo_screenState extends State<Creating_todo_screen> {
             ? Colors.grey[850]
             : Colors.white, // Define a cor do fundo de acordo com o tema
         padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 25, top: 25),
-              child: Text(
-                "Adicione uma tarefa",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  color: widget.isDarkTheme
-                      ? Colors.white
-                      : Colors.black, // Cor do texto de acordo com o tema
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextFormField(
-              controller: titulo,
-              decoration: InputDecoration(
-                hintText: 'Digite o título',
-                labelText: 'Título',
-                labelStyle: TextStyle(
-                    color: widget.isDarkTheme ? Colors.white : Colors.black),
-                hintStyle: const TextStyle(color: Colors.white70),
-                prefixIcon: const Icon(Icons.title, color: Colors.deepOrange),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.deepOrange),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextFormField(
-              controller: data, // Controlador para o campo de data
-              decoration: InputDecoration(
-                hintText: 'Escolha uma data',
-                labelText: 'Data',
-                labelStyle: TextStyle(
-                    color: widget.isDarkTheme ? Colors.white : Colors.black),
-                hintStyle: const TextStyle(color: Colors.white70),
-                prefixIcon:
-                    const Icon(Icons.calendar_month, color: Colors.deepOrange),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.deepOrange),
-                ),
-              ),
-              readOnly: true, // Campo somente leitura
-              onTap: () async {
-                // Calendário para escolher a data
-                DateTime? pickedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(), // Data inicial
-                  firstDate: DateTime.now(), // Data mínima
-                  lastDate: DateTime(DateTime.now().year + 1), // Data máxima
-                );
-                if (pickedDate != null) {
-                  String formattedDate = DateFormat('yyyy-MM-dd')
-                      .format(pickedDate); // Formata a data
-                  setState(() {
-                    data.text = formattedDate; // Atualiza o campo de data
-                  });
-                } else {
-                  _showSnackBar('Data não selecionada!');
-                }
-              },
-            ),
-            const SizedBox(height: 10),
-            TextFormField(
-              controller: descricao, // Controlador para o campo de descrição
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: 'Digite uma descrição',
-                labelText: 'Descrição',
-                labelStyle: TextStyle(
-                    color: widget.isDarkTheme ? Colors.white : Colors.black),
-                hintStyle: const TextStyle(color: Colors.white70),
-                prefixIcon:
-                    const Icon(Icons.description, color: Colors.deepOrange),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.deepOrange),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        child: SingleChildScrollView(
+          // Elemento necessário para uma melhor responsividade
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextButton.icon(
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.deepOrange,
-                    ),
-                    onPressed: _SalvarTarefa,
-                    icon: const Icon(Icons.save, color: Colors.white),
-                    label: const Text(
-                      'Salvar',
-                      style: TextStyle(color: Colors.white),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25, top: 25),
+                    child: Text(
+                      "Adicione uma tarefa",
+                      style: TextStyle(
+                        fontSize: 30 * MediaQuery.of(context).textScaleFactor,
+                        fontWeight: FontWeight.bold,
+                        color: widget.isDarkTheme
+                            ? Colors.white
+                            : Colors.black, // Cor do texto de acordo com o tema
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 10),
+                  TextFormField(
+                    controller: titulo,
+                    decoration: InputDecoration(
+                      hintText: 'Digite o título',
+                      labelText: 'Título',
+                      labelStyle: TextStyle(
+                        color: widget.isDarkTheme ? Colors.white : Colors.black,
+                      ),
+                      hintStyle: const TextStyle(color: Colors.white70),
+                      prefixIcon:
+                          const Icon(Icons.title, color: Colors.deepOrange),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Colors.deepOrange),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextFormField(
+                    controller: data, // Controlador para o campo de data
+                    decoration: InputDecoration(
+                      hintText: 'Escolha uma data',
+                      labelText: 'Data',
+                      labelStyle: TextStyle(
+                        color: widget.isDarkTheme ? Colors.white : Colors.black,
+                      ),
+                      hintStyle: const TextStyle(color: Colors.white70),
+                      prefixIcon: const Icon(Icons.calendar_month,
+                          color: Colors.deepOrange),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Colors.deepOrange),
+                      ),
+                    ),
+                    readOnly: true, // Campo somente leitura
+                    onTap: () async {
+                      // Calendário para escolher a data
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(), // Data inicial
+                        firstDate: DateTime.now(), // Data mínima
+                        lastDate:
+                            DateTime(DateTime.now().year + 1), // Data máxima
+                      );
+                      if (pickedDate != null) {
+                        String formattedDate = DateFormat('yyyy-MM-dd')
+                            .format(pickedDate); // Formata a data
+                        setState(() {
+                          data.text = formattedDate; // Atualiza o campo de data
+                        });
+                      } else {
+                        _showSnackBar('Data não selecionada!');
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  TextFormField(
+                    controller:
+                        descricao, // Controlador para o campo de descrição
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      hintText: 'Digite uma descrição',
+                      labelText: 'Descrição',
+                      labelStyle: TextStyle(
+                        color: widget.isDarkTheme ? Colors.white : Colors.black,
+                      ),
+                      hintStyle: const TextStyle(color: Colors.white70),
+                      prefixIcon: const Icon(Icons.description,
+                          color: Colors.deepOrange),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Colors.deepOrange),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton.icon(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.deepOrange,
+                          ),
+                          onPressed: _SalvarTarefa,
+                          icon: const Icon(Icons.save, color: Colors.white),
+                          label: const Text(
+                            'Salvar',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
                 ],
-              ),
-            )
-          ],
+              );
+            },
+          ),
         ),
       ),
     );
